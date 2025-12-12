@@ -1,23 +1,22 @@
 #!/bin/bash
 set -e
 
-if [ ! -f /config/haproxy.cfg ]; then
-    echo "ERROR: /config/haproxy.cfg Not Found!"
+# Check config exists
+if [[ ! -f /config/haproxy.cfg ]]; then
+    echo "ERROR: /config/haproxy.cfg not found" >&2
     exit 1
 fi
 
-if [ ! -f /config/keepalived.conf ]; then
-    echo "ERROR: /config/keepalived.conf Not Found!"
+if [[ ! -f /config/keepalived.conf ]]; then
+    echo "ERROR: /config/keepalived.conf not found" >&2
     exit 1
 fi
 
-echo "Starting services..."
-
-# Start rsyslog (foreground)
+echo "Starting rsyslog..."
 rsyslogd
 
-# Start haproxy (background)
+echo "Starting HAProxy..."
 haproxy -f /config/haproxy.cfg &
 
-# Start keepalived (foreground)
+echo "Starting Keepalived..."
 exec keepalived -n -l -D -f /config/keepalived.conf

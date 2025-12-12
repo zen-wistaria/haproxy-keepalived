@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM alpine:3.20
 
 ARG TITLE
 ARG VERSION
@@ -20,10 +20,10 @@ LABEL org.opencontainers.image.title="${TITLE}" \
       org.opencontainers.image.revision="${VCS_REF}" \
       org.opencontainers.image.authors="${AUTHORS}"
 
-RUN apt update && \
-    apt install -y keepalived haproxy rsyslog nano && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk update && \
+    apk add --no-cache keepalived haproxy rsyslog bash && \
+    rm -rf /var/cache/apk/*
 
-ARG COPY --chmod0755 entrypoint.sh /entrypoint.sh
+COPY --chmod=0755 entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
